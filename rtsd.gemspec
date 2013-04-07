@@ -12,6 +12,8 @@ Gem::Specification.new do |spec|
   spec.summary       = %q{A Ruby client for OpenTSDB.}
   spec.homepage      = "https://github.com/dplummer/rtsd"
   spec.license       = "MIT"
+  spec.signing_key = "#{ENV['HOME']}/.gem/gem-private_key.pem"
+  spec.cert_chain  = ['gem-public_cert.pem']
 
   spec.files         = `git ls-files`.split($/)
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
