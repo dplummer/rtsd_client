@@ -20,15 +20,13 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
-
 ```ruby
 client = Rtsd::Client.new(:hostname => 'localhost', :port => 4242)
 
 client.put(:metric => 'cheezeburgers.per_second',
            :value => 9001,
            :timestamp => Time.now.to_i,
-           :tags => {:ya => 'nope', :host => 'strongbadia')
+           :tags => {:ya => 'nope', :host => 'strongbadia'})
 ```
 
 ## Contributing
