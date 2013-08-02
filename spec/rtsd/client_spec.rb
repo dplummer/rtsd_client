@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Rtsd::Client do
   subject { Rtsd::Client.new(:hostname => 'localhost', :port => 4242) }
-  let(:socket) { mock("Socket", :puts => nil) }
+  let(:socket) { double("Socket", :puts => nil) }
 
   before(:each) do
     TCPSocket.stub(:new).and_return(socket)
@@ -23,6 +23,28 @@ describe Rtsd::Client do
     it "puts the formatted data on the socket" do
       socket.should_receive(:puts).with("put cows.count #{timestamp} 42.0 cats=meow foo=bar")
       subject.put(params)
+    end
+
+    context 'missing keys' do
+      it 'raises ArgumentError with no params' do
+        expect{subject.put({})}.to raise_error(ArgumentError)
+      end
+
+      it 'raises ArgumentError with missing metric' do
+        expect{subject.put({:value => 1, :timestamp => Time.now.to_i, :tags => {:foo => 'bar'}})}.to raise_error(ArgumentError)
+      end
+
+      it 'raises ArgumentError with missing value' do
+        expect{subject.put({:metric => 1, :timestamp => Time.now.to_i, :tags => {:foo => 'bar'}})}.to raise_error(ArgumentError)
+      end
+
+      it 'raises ArgumentError with missing tags' do
+        expect{subject.put({:metric => 'foo.bar', :value => 1, :timestamp => Time.now.to_i})}.to raise_error(ArgumentError)
+      end
+
+      it 'does not raise ArgumentError with missing timestamp' do
+        expect{subject.put({:metric => 'foo.bar', :value => 1, :tags => { :foo => 'bar' }})}.not_to raise_error()
+      end
     end
 
     context "no server listening" do
